@@ -202,7 +202,7 @@ resource "aws_autoscaling_policy" "main" {
 
 # For Creation of Listener Rule, which depends on Target Group
 resource "aws_lb_listener_rule" "main" {
-  listener_arn = local.backend_alb_listener_arn
+  listener_arn = local.alb_listener_arn
   priority     = var.rule_priority
 
   action {
@@ -210,10 +210,9 @@ resource "aws_lb_listener_rule" "main" {
     target_group_arn = aws_lb_target_group.main.arn
   }
 
-  # component.backend-alb-dev.devopsdaws.online
   condition {
     host_header {
-      values = ["${var.component}.backend-alb-${var.environment}.${var.domain_name}"]
+      values = [local.host_header]
     }
   }
 }
