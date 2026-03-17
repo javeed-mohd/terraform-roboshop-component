@@ -46,7 +46,7 @@ resource "terraform_data" "main" {
   }
 }
 
-# For Stopping the EC2 Instance
+# Stopping the EC2 Instance
 resource "aws_ec2_instance_state" "main" {
   instance_id = aws_instance.main.id
   state       = "stopped"
@@ -68,7 +68,7 @@ resource "aws_ami_from_instance" "main" {
   )
 }
 
-# For Creation of Target Group
+# Creation of Target Group
 resource "aws_lb_target_group" "main" {
   name                  = "${var.project}-${var.environment}-${var.component}"
   port                  = local.port_number 
@@ -89,7 +89,7 @@ resource "aws_lb_target_group" "main" {
   }
 }
 
-# For Creation of Launch Template
+# Creation of Launch Template
 resource "aws_launch_template" "main" {
   name          = "${var.project}-${var.environment}-${var.component}"
   image_id      = aws_ami_from_instance.main.id
@@ -136,7 +136,7 @@ resource "aws_launch_template" "main" {
     )
 }
 
-# For Creation of AutoScaling Group
+# Creation of AutoScaling Group
 resource "aws_autoscaling_group" "main" {
   name                      = "${var.project}-${var.environment}-${var.component}"
   max_size                  = 10
@@ -184,7 +184,7 @@ resource "aws_autoscaling_group" "main" {
   }
 }
 
-# For Creation of AutoScaling Policy
+# Creation of AutoScaling Policy
 resource "aws_autoscaling_policy" "main" {
   autoscaling_group_name      = aws_autoscaling_group.main.name
   name                        = "${var.project}-${var.environment}-${var.component}"
@@ -200,7 +200,9 @@ resource "aws_autoscaling_policy" "main" {
   }
 }
 
-# For Creation of Listener Rule, which depends on Target Group
+# Creation of Listener Rule, which depends on Target Group
+# If frontend = frontend-dev,devopsdaws.online
+# If backend  = component.backend-alb-dev.devopsdaws.online
 resource "aws_lb_listener_rule" "main" {
   listener_arn = local.alb_listener_arn
   priority     = var.rule_priority
@@ -217,7 +219,7 @@ resource "aws_lb_listener_rule" "main" {
   }
 }
 
-# For Destroying the Instance through terrraform data(null resource) and local-exec provisioner
+# Destroying the Instance through terrraform data(null resource) and local-exec provisioner
 resource "terraform_data" "main_delete" {
   triggers_replace = [
     aws_instance.main.id
