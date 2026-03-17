@@ -71,7 +71,7 @@ resource "aws_ami_from_instance" "main" {
 # For Creation of Target Group
 resource "aws_lb_target_group" "main" {
   name                  = "${var.project}-${var.environment}-${var.component}"
-  port                  = var.port_number 
+  port                  = local.port_number 
   protocol              = "HTTP"
   vpc_id                = local.vpc_id
   deregistration_delay  = 60 # Time required for instance termination is 60 seconds
@@ -80,8 +80,8 @@ resource "aws_lb_target_group" "main" {
     healthy_threshold   = 2 # Consecutive successes needed to be healthy
     interval            = 10 # Time between health checks (seconds)
     matcher             = "200-299" # HTTP codes for a successful response
-    path                = var.health_check_path # The destination path for health checks
-    port                = var.port_number # Use the port the target receives traffic on
+    path                = local.health_check_path # The destination path for health checks
+    port                = local.port_number # Use the port the target receives traffic on
     protocol            = "HTTP" # Protocol for health checks
     timeout             = 2 # Amount of time no response means failure (seconds)
     unhealthy_threshold = 3 # Consecutive failures needed to be unhealthy
