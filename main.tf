@@ -57,7 +57,7 @@ resource "aws_ec2_instance_state" "main" {
 resource "aws_ami_from_instance" "main" {
   # To make it unique we use instance id aslo..As AMI always creates roboshop-dev-component
   # roboshop-dev-component-v3-i-06f5d173b7cffaed8 (Last)
-  name               = "${var.project}-${var.environment}-${var.component}"
+  name               = "${var.project}-${var.environment}-${var.component}-${var.app_version}-${aws_instance.catalogue.id}"
   source_instance_id = aws_instance.main.id
   depends_on         = [aws_ec2_instance_state.main]
   tags  = merge(
